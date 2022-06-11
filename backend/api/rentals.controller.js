@@ -37,4 +37,20 @@ export default class RentalsCtrl {
       res.status(500).json({ error: e });
     }
   }
+
+  static async apiGetRentalById(req, res, next) {
+    try {
+      let id = req.params.id || {};
+      let rental = await RentalsDAO.getRentalByID(id);
+      if (!rental) {
+        res.status(404).json({ error: "Not found" });
+        return;
+      }
+      console.log(rental);
+      res.json(rental);
+    } catch (e) {
+      console.log(`api, ${e}`);
+      res.status(500).json({ error: e });
+    }
+  }
 }

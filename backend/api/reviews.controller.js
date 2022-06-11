@@ -44,7 +44,7 @@ export default class ReviewsCtrl {
     try {
       const reviewId = req.query.id;
       const userId = req.body.user_id;
-      console.log(reviewId);
+      console.log(req.body.user_id);
 
       const reviewResponse = await ReviewsDAO.deleteReview(reviewId, userId);
       res.json({ status: "success" });

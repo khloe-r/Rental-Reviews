@@ -7,7 +7,6 @@ export default class RentalsDAO {
     }
     try {
       rentals = await conn.db(process.env.RESTREVIEWS_NS).collection("listingsAndReviews");
-      reviews = await conn.db(process.env.RESTREVIEWS_NS).collection("reviews");
     } catch (e) {
       console.error(`Unable to establish a collection handle in rentalsDEO: ${e}`);
     }
@@ -57,6 +56,30 @@ export default class RentalsDAO {
     } catch (e) {
       console.error(`Unable to get properties: ${e}`);
       return properties;
+    }
+  }
+
+  static async getRentalByID(id) {
+    try {
+      const pipeline = [
+        {
+          $match: {
+            _id: id,
+          },
+        },
+        {
+          $lookup: {
+            from: "reviews",
+            localField: "_id",
+            foreignField: "rental_id",
+            as: "our_reviews",
+          },
+        },
+      ];
+      return await rentals.aggregate(pipeline).next();
+    } catch (e) {
+      console.error(`Something went wrong in getRentalByID: ${e}`);
+      throw e;
     }
   }
 }
