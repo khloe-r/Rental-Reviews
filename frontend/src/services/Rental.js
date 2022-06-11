@@ -9,6 +9,10 @@ class RentalDataService {
     return http.get(`?${by}=${query}&page=${page}`);
   }
 
+  get(id) {
+    return http.get(`/id/${id}`);
+  }
+
   createReview(data) {
     return http.post("/review", data);
   }
@@ -17,11 +21,11 @@ class RentalDataService {
     return http.put("/review", data);
   }
 
-  deleteReview(id) {
-    return http.delete(`/review?id=${id}`);
+  deleteReview(id, userId) {
+    return http.delete(`/review?id=${id}`, { data: { user_id: userId } });
   }
 
-  getProperties(id) {
+  getProperties() {
     return http.get(`/property-types`);
   }
 }

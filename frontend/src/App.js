@@ -131,24 +131,9 @@ function App() {
           <Routes>
             <Route exact path={"/"} element={<RentalList />} />
             <Route exact path={"/rentals"} element={<RentalList />} />
-            <Route
-              path="/rental/:id/review"
-              render={(props) => {
-                <AddReview {...props} user={user} />;
-              }}
-            />
-            <Route
-              path="/rental/:id"
-              render={(props) => {
-                <Rental {...props} user={user} />;
-              }}
-            />
-            <Route
-              path="/login"
-              render={(props) => {
-                <Login {...props} login={login} />;
-              }}
-            />
+            <Route path="/rental/:id/review" element={<AddReview user={user} />} />
+            <Route path="/rental/:id" element={<Rental user={user} />} />
+            <Route path="/login" element={<Login login={login} />} />
           </Routes>
         </Box>
       </>

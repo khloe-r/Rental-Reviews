@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import RentalDataService from "../services/Rental";
 import { Link } from "react-router-dom";
-import { SearchIcon, StarIcon } from "@chakra-ui/icons";
-import { IconButton, Input, Grid, GridItem, Select, Box, Badge, Image, Button, Link as CLink, textDecoration } from "@chakra-ui/react";
+import { SearchIcon, StarIcon, ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
+import { IconButton, Input, Grid, GridItem, Select, Box, Badge, Image, Button, Link as CLink, Alert, AlertIcon } from "@chakra-ui/react";
 
 const RentalList = (props) => {
   const [rentals, setRentals] = useState([]);
+  const [page, setPage] = useState(0);
+  const [results, setResults] = useState(20);
   const [searchName, setSearchName] = useState("");
   const [searchBeds, setSearchBeds] = useState("");
   const [searchBath, setSearchBath] = useState("");
@@ -34,11 +36,12 @@ const RentalList = (props) => {
     setSearchProperty(searchProperty);
   };
 
-  const retrieveRentals = () => {
-    RentalDataService.getAll()
+  const retrieveRentals = (page = 0) => {
+    RentalDataService.getAll(page)
       .then((response) => {
         console.log(response.data);
         setRentals(response.data.rentals);
+        setResults(response.data.total_results);
       })
       .catch((e) => {
         console.log(e);
@@ -60,11 +63,12 @@ const RentalList = (props) => {
     retrieveRentals();
   };
 
-  const find = (query, by) => {
-    RentalDataService.find(query, by)
+  const find = (query, by, pg = 0) => {
+    RentalDataService.find(query, by, pg)
       .then((response) => {
         console.log(response.data);
         setRentals(response.data.rentals);
+        setResults(response.data.total_results);
       })
       .catch((e) => {
         console.log(e);
@@ -86,6 +90,15 @@ const RentalList = (props) => {
     } else {
       find(searchProperty, "property_type");
     }
+  };
+
+  const forwardPage = () => {
+    retrieveRentals(page + 1);
+    setPage(page + 1);
+  };
+  const backPage = () => {
+    retrieveRentals(page - 1);
+    setPage(page - 1);
   };
 
   return (
@@ -124,7 +137,7 @@ const RentalList = (props) => {
         {rentals.map((rental, index) => {
           const rating = Math.floor((rental.review_scores.review_scores_rating / 100) * 5);
           return (
-            <GridItem w="100%" colSpan={{ sm: 12, md: 6, lg: 3 }}>
+            <GridItem w="100%" colSpan={{ sm: 12, md: 6, lg: 4 }}>
               <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden" key={index}>
                 <Image src={rental.images.picture_url} alt={`${rental.name} property`} w="100%" h={200} />
 
@@ -145,7 +158,8 @@ const RentalList = (props) => {
                   <Box>
                     ${rental.price["$numberDecimal"]}
                     <Box as="span" color="gray.600" fontSize="sm">
-                      / wk
+                      {" "}
+                      / night
                     </Box>
                   </Box>
 
@@ -156,7 +170,7 @@ const RentalList = (props) => {
                         <StarIcon key={i} color={i < rating ? "teal.500" : "gray.300"} />
                       ))}
                     <Box as="span" ml="2" color="gray.600" fontSize="sm">
-                      {rental.number_of_reviews} reviews
+                      {rental.number_of_reviews} AirBNB reviews
                     </Box>
                   </Box>
 
@@ -186,6 +200,17 @@ const RentalList = (props) => {
           );
         })}
       </Grid>
+      {results === 0 && (
+        <Alert status="error">
+          <AlertIcon />
+          No results match your search criteria!
+        </Alert>
+      )}
+      <Box display="flex" mt="2" alignItems="center" justifyContent={"center"}>
+        {page > 0 && <IconButton aria-label="Back page" icon={<ArrowLeftIcon />} onClick={backPage} />}
+        <Button _hover={"none"}>Page {page + 1}</Button>
+        {page < results / 20 && <IconButton aria-label="Forward page" icon={<ArrowRightIcon />} onClick={forwardPage} />}
+      </Box>
     </div>
   );
 };
