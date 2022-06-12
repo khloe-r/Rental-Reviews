@@ -131,7 +131,7 @@ function App() {
           <Routes>
             <Route exact path={"/"} element={<RentalList />} />
             <Route exact path={"/rentals"} element={<RentalList />} />
-            <Route path="/rental/:id/review" element={<AddReview user={user} />} />
+            <Route path="/rental/:id/review/:status" element={<AddReview user={user} />} />
             <Route path="/rental/:id" element={<Rental user={user} />} />
             <Route path="/login" element={<Login login={login} />} />
           </Routes>

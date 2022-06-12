@@ -15,13 +15,14 @@ export default class ReviewsDAO {
     }
   }
 
-  static async addReview(rentalId, user, review, date) {
+  static async addReview(rentalId, user, review, date, stars) {
     try {
       const reviewDoc = {
         name: user.name,
         user_id: user._id,
         date: date,
         text: review,
+        stars: stars,
         rental_id: rentalId,
       };
 
@@ -32,9 +33,9 @@ export default class ReviewsDAO {
     }
   }
 
-  static async updateReview(reviewId, userId, text, date) {
+  static async updateReview(reviewId, userId, text, date, stars) {
     try {
-      const updateResponse = await reviews.updateOne({ user_id: userId, _id: ObjectId(reviewId) }, { $set: { text: text, date: date } });
+      const updateResponse = await reviews.updateOne({ user_id: userId, _id: ObjectId(reviewId) }, { $set: { text: text, date: date, stars: stars } });
 
       return updateResponse;
     } catch (e) {

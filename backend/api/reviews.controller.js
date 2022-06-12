@@ -4,6 +4,7 @@ export default class ReviewsCtrl {
   static async apiPostReview(req, res, next) {
     try {
       const rentalId = req.body.rental_id;
+      const stars = req.body.stars;
       const review = req.body.text;
       const userInfo = {
         name: req.body.name,
@@ -11,7 +12,7 @@ export default class ReviewsCtrl {
       };
       const date = new Date();
 
-      const ReviewResponse = await ReviewsDAO.addReview(rentalId, userInfo, review, date);
+      const ReviewResponse = await ReviewsDAO.addReview(rentalId, userInfo, review, date, stars);
       res.json({ status: "success" });
     } catch (e) {
       res.status(500).json({ error: e.message });
@@ -21,10 +22,11 @@ export default class ReviewsCtrl {
   static async apiUpdateReview(req, res, next) {
     try {
       const reviewId = req.body.review_id;
+      const stars = req.body.stars;
       const text = req.body.text;
       const date = new Date();
 
-      const reviewResponse = await ReviewsDAO.updateReview(reviewId, req.body.user_id, text, date);
+      const reviewResponse = await ReviewsDAO.updateReview(reviewId, req.body.user_id, text, date, stars);
 
       var { error } = reviewResponse;
       if (error) {

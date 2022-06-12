@@ -3,6 +3,7 @@ import RentalDataService from "../services/Rental";
 import { Link } from "react-router-dom";
 import { Alert, AlertIcon } from "@chakra-ui/react";
 import { useParams } from "react-router";
+import { StarIcon } from "@chakra-ui/icons";
 import { Box, Avatar, Center, Link as CLink, Container, ButtonGroup, Stack, Text, Image, Flex, VStack, Button, Heading, SimpleGrid, StackDivider, useColorModeValue, VisuallyHidden, List, ListItem } from "@chakra-ui/react";
 
 const Rental = (props) => {
@@ -105,6 +106,12 @@ const Rental = (props) => {
                         </Box>
 
                         <Box>Posted on {review.date}</Box>
+                        <Box display="flex" mt="2" alignItems="center">
+                          {review.stars &&
+                            Array(5)
+                              .fill("")
+                              .map((_, i) => <StarIcon key={i} color={i < review.stars ? "teal.500" : "gray.300"} />)}
+                        </Box>
                         {props.user && props.user.id === review.user_id && (
                           <Stack mt={8} direction={"row"} spacing={4}>
                             <Button
@@ -116,10 +123,13 @@ const Rental = (props) => {
                               }}
                               as={Link}
                               to={{
-                                pathname: `/rental/${id}/review`,
+                                pathname: `/rental/${id}/review/edit`,
                                 state: {
                                   currentReview: review,
                                 },
+                              }}
+                              state={{
+                                currentReview: review,
                               }}
                             >
                               Edit Review
@@ -264,7 +274,7 @@ const Rental = (props) => {
                     textDecoration: "none",
                   }}
                   as={Link}
-                  to={`/rental/${id}/review`}
+                  to={`/rental/${id}/review/add`}
                 >
                   Add Review
                 </Button>
